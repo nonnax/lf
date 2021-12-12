@@ -114,8 +114,9 @@ cmd link %{{
 }}
 
 cmd mklinks %{{
-	echo $( pastelink.rb )
-	lf -remote 'send clear'
+	echo $( cplinks )
+	lf -remote 'send unselect'
+	# lf -remote 'send clear'
 }}
 
 cmd lf_man_paste %{{
@@ -279,9 +280,7 @@ cmd untar ${{
 	for f in "$fx"; do
 		tar "xvf" "$f"
 	done
-    # lf  'send clear'
-    # lf  'send unselect'
-    # lf  'send reload'
+  lf -remote 'send clear'
 }}
 
 # compress current file or selected files with tar and gunzip
@@ -333,9 +332,6 @@ cmd cd ${{
 }}
 
 cmd cd_OLDPWD ${{
-    # printf "\033]0; $PWD\007" > /dev/tty
-    # read -p "\033]0; $PWD\007"
-    # click.sh
     lf -remote "send cd \"$OLDPWD\""
 }}
 # cd with fzf 
@@ -348,7 +344,6 @@ cmd fzfcd ${{
       cmd="select"
    fi
    echo "send $id $cmd \"$res\""
- # lf -remote "send $id $cmd \"$res\""
    lf -remote "send $id $cmd \"$res\""
  }}
 
@@ -386,7 +381,6 @@ cmd jfind_word ${{
 }}
 
 
-
 # play media files
 # cmd playmedia %set -f; xdg-open $fx
 cmd playmedia ${{
@@ -399,9 +393,6 @@ cmd playmedia ${{
 # 
 # cmd aj %lf -remote "send $id cd '$(autojump $1)'"
 # map a push :aj<space>
-
-# set previewer ~/.config/lf/pv.sh
-# map i $~/.config/lf/pv.sh $f | less -R
 
 # change wallpaper
 cmd setwallpaper ${{
@@ -524,6 +515,9 @@ map gB fzfcdbig
 
 map gu cd_OLDPWD
 
+
+map <c-c>c $termite -e compad &
+
 map oA %audacity "$f" &
 map oc $csvedit "$f"
 map od %lodraw "$f"
@@ -544,8 +538,8 @@ map og $ged "$f"
 
 map pP paste
 map PP paste
-map pl mklinks
-map ps link
+map pl $pastelink.rb
+map ps $pastelink.rb
 
 # map r rename_edit
 # map R bulk-rename
