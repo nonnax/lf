@@ -2,7 +2,6 @@
 # interpreter for shell commands
 # set -f
 # set -u
-
 #set shell zsh
 set shell bash
 set autoquit true
@@ -513,7 +512,9 @@ map gv cd ~/Videos
 map gw cd ~/Work
 map gB fzfcdbig
 
-map gu cd_OLDPWD
+map gz $gzip "$f"
+map gu $gzip -d "$f"
+map gx cd_OLDPWD
 
 
 map <c-c>c $termite -e compad &
@@ -534,6 +535,7 @@ map om $runner.rb "$f"
 map or catrb 
 map ot $ttsedit "$f" 
 map og $ged "$f" 
+map oz $zbat "$f" 
 # map pm playmedia
 
 map pP paste
