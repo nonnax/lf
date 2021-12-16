@@ -14,7 +14,8 @@ batorcat() {
 	shift
 	if command -v bat > /dev/null 2>&1
 	then
-		bat --color=always --style=plain --pager=never "$file" "$@"
+		# bat --color=always --style=plain --pager=never "$file" "$@"
+		bat --color=always --pager=never "$file" "$@"
 	else
 		cat "$file"
 	fi
@@ -68,6 +69,9 @@ case "$(printf "%s\n" "$(readlink -f "$1")" | awk '{print tolower($0)}')" in
 		;;
 	*.ino)
 		batorcat --language=cpp "$1"
+		;;
+	*.gz)
+		zbat "$1"
 		;;
 	*)
 		batorcat "$1"
