@@ -269,7 +269,7 @@ cmd targz ${{
 cmd cpdated ${{
 	set -f
 	fname="$(basename $f)"
-	cpdate.rb "$fname"
+	cpdate "$fname"
   lf -remote 'send reload'
     # lf -remote "send select $fname"
 }}
