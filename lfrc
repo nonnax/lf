@@ -94,7 +94,7 @@ cmd xpaste %{{
     mode=$(echo "$load" | sed -n '1p')
     list=$(echo "$load" | sed '1d')
     if [ $mode = 'copy' ]; then
-        cp -R $list .
+        gcp $list .
     elif [ $mode = 'move' ]; then
         mv $list .
     fi
@@ -539,9 +539,9 @@ map oz $zbat "$f"
 # map pm playmedia
 
 map pP paste
-map PP paste
-map pl $pastelink.rb
-map ps $pastelink.rb
+map PP xpaste
+map pl $pastelink
+map ps $pastelink
 
 # map r rename_edit
 # map R bulk-rename
