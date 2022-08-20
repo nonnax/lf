@@ -60,7 +60,7 @@ cmd edit_cd ${{
 	  lf -remote "send $id $cmd \"$f\""
    elif [ -f "$f" ]; then
 	   case $(file -b --mime-type - < "$f") in
-	  	(text/*)   
+	  	(text/*)
 			$EDITOR "$f"
 	   esac
    fi
@@ -166,7 +166,7 @@ cmd rename_edit ${{
 		$EDITOR "$temp_file"
 		# edline.py "$temp_file"
 		# read --line fname < $temp_file
-		#join new lines 
+		#join new lines
 		fname=$(tr  -d '\n' < "$temp_file")
 		mv -- "${fn}" "${fname}"
 	# done
@@ -207,16 +207,16 @@ cmd bulk-rename ${{
 cmd trash %set -f; mv -i --backup=numbered $fx ~/.trash
 
 cmd rm_delete ${{
-	set -f 
+	set -f
 	# [[ $ans == "y" ]] && rm --Rdfr $fx
-	[[ $ans == "y" ]] && trash	
+	[[ $ans == "y" ]] && trash
     lf -remote 'send reload'
-	
-}} 
+
+}}
 
 cmd rm_delete_forced ${{
 	set -f
-	# fd -td -x 
+	# fd -td -x
 	# chmod -R +rwx "$fx"
 	# if [[ $1 == "y" ]]; then
 	for fn in $fx
@@ -228,7 +228,7 @@ cmd rm_delete_forced ${{
 	# fi
     lf -remote 'send reload'
 
-}} 
+}}
 
 # define a custom 'delete' command
 # cmd rm_delete ${{
@@ -269,7 +269,7 @@ cmd targz ${{
 cmd cpdated ${{
 	set -f
 	fname="$(basename $f)"
-	cpdate "$fname"
+	cpnum "$fname"
   lf -remote 'send reload'
     # lf -remote "send select $fname"
 }}
@@ -306,21 +306,21 @@ cmd zip ${{
 # cmd chmod %set -f; chmod $1 $fx
 
 cmd chmod ${{
-	set -f 
+	set -f
 
 	for f in $fx; do
-		sudo chmod "$1" "$f" 	
+		sudo chmod "$1" "$f"
 	done
-	
+
 	lf -remote 'send clear'
 	lf -remote 'send unselect'
 	lf -remote 'send reload'
-}} 
+}}
 
 # chmod current file or selected files
 cmd chown ${{
 	set -f
-	sudo chown -chR $1:$1 $fx 
+	sudo chown -chR $1:$1 $fx
 	lf -remote 'send $id unselect'
 	lf -remote 'send reload'
 }}
@@ -333,10 +333,10 @@ cmd cd ${{
 cmd cd_OLDPWD ${{
     lf -remote "send cd \"$OLDPWD\""
 }}
-# cd with fzf 
+# cd with fzf
 cmd fzfcd ${{
    # res="$( find . -maxdepth 3 2>&1 | sed 's/^.\///' | sort | fzf --reverse --preview='cleaner.sh && file --mime {} | grep -i 'text' && bat --color=always {} || pv.sh {}' --header='Jump to loc')"
-   res="$( find . -maxdepth 3 2>&1 | sed 's/^.\///' | sort | fzf --reverse --preview='[ -f {} ] && preview {} || tree {} ' --header='Jump to loc')"
+   res="$( find . -maxdepth 3 2>&1 | sed 's/^.\///' | sort | fzf --ansi --reverse --preview-window=right:80% --preview='[ -f {} ] && preview {} || tree {} ' --header='Jump to loc')"
    if [ -d "$res" ]; then
       cmd="cd"
    else
@@ -347,7 +347,7 @@ cmd fzfcd ${{
  }}
 
 cmd fzfcdbig ${{
-   res="$(fd -S +50m | sort -k5 -r  | fzf --preview='ls -l {}'| awk '{print $(NF)}')"
+   res="$(fd -S +30m | sort -k5 -r  | fzf --preview='ls -l {}'| awk '{print $(NF)}')"
    if [ -d "$res" ]; then
       cmd="cd"
    else
@@ -360,13 +360,20 @@ cmd findword ${{
 	if [ ! "$#" -gt 0 ]; then
 	  lf -remote 'send echo "Need a string to search for!"'
 	  exit 1;
-	fi	
+	fi
 
-	findo "$1" 
+	findo "$1"
 	found="$(foundo)"
 	if [ -f "${found}" ]; then
-		lf -remote "send $id select \"${found}\""	
+		lf -remote "send $id select \"${found}\""
 	fi
+}}
+
+cmd makefile ${{
+  fname="$(newfile $1)"
+	if [ -f "${fname}" ]; then
+    lf -remote "send $id select \"${fname}\""
+  fi
 }}
 
 # pdf to text
@@ -389,7 +396,7 @@ cmd playmedia ${{
 	done
 }}
 
-# 
+#
 # cmd aj %lf -remote "send $id cd '$(autojump $1)'"
 # map a push :aj<space>
 
@@ -400,7 +407,7 @@ cmd setwallpaper ${{
 
 cmd oilchange ${{
 	shopt -s oil:all
-	= ARGV	
+	= ARGV
 	for i in @range(1000) {
 		echo "hello"
 	}
@@ -408,11 +415,11 @@ cmd oilchange ${{
 
 cmd catrb ${{
 	d=$( catrb.oil )
-	lf -remote "send $id cd \"${d}\""	
+	lf -remote "send $id cd \"${d}\""
 }}
 
 cmd fzf_last_changed ${{
-   res=$( fd -t f --changed-within 3days | fzf --preview='bat {}' )
+   res=$( fd -t f --changed-within 2days | fzf )
    if [ -d "$res" ]; then
       cmd="cd"
    else
@@ -474,7 +481,7 @@ map fZ targz
 # map l reload
 
 map md push :mkdir<space>
-map mf push %new.rb<space>
+map mf push :makefile<space>
 map mz extract
 map ml mark-load
 map ms mark-save
@@ -489,7 +496,9 @@ map + mk_readonly_toggle
 
 map ec $csvedit "$f"
 map ee $$EDITOR "$f"
+map ef $ee.sh
 map es $sudo $EDITOR "$f"
+map ev $vim "$f"
 
 map go fzfcd
 map g/ fzfcd
@@ -498,7 +507,8 @@ map gg fzf_last_changed
 map gb cd ~/bin
 map gc cd ~/.config
 map gd cd ~/Documents
-map gf cd ~/ftp
+map ge $ee.sh
+map gf cd ~/ftp/files
 map gC cd ~/crystal
 map gD cd ~/Downloads
 map gm cd ~/Music
@@ -520,9 +530,10 @@ map gx cd_OLDPWD
 map <c-c>c $termite -e compad &
 
 map oA %audacity "$f" &
+map ob $foliate "$f"
 map oc $csvedit "$f"
 map od %lodraw "$f"
-map oe $$EDITOR "$f"
+map oe $epr "$f"
 map oos $sudo $EDITOR "$f"
 map ow $bat "$f"
 map oi %lximage-qt "$f"
@@ -532,10 +543,11 @@ map oq %firefox "$f"
 map of pdftotext
 map oF %pdfw "$f"
 map om $runner.rb "$f"
-map or catrb 
-map ot $ttsedit "$f" 
-map og $ged "$f" 
-map oz $zbat "$f" 
+map or catrb
+map ot $ttsedit "$f"
+map og $ged "$f"
+map oz $zbat "$f"
+map ov $vim "$f"
 # map pm playmedia
 
 map pP paste
@@ -555,3 +567,19 @@ map <f-2> $printf '%s\n' $fx | vidir -
 
 set hidden on
 set info size:time
+
+# file types (with matching order)
+# ln             # LINK
+# or             # ORPHAN
+# tw      t       # STICKY_OTHER_WRITABLE
+# ow             # OTHER_WRITABLE
+# st      t       # STICKY
+# di             # DIR
+# pi      p       # FIFO
+# so      s       # SOCK
+# bd      b       # BLK
+# cd      c       # CHR
+# su      u       # SETUID
+# sg      g       # SETGID
+# ex             # EXEC
+# fi             # FILE
