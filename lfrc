@@ -346,6 +346,18 @@ cmd fzfcd ${{
    lf -remote "send $id $cmd \"$res\""
  }}
 
+cmd fzfgo ${{
+   # res="$( find . -maxdepth 3 2>&1 | sed 's/^.\///' | sort | fzf --reverse --preview='cleaner.sh && file --mime {} | grep -i 'text' && bat --color=always {} || pv.sh {}' --header='Jump to loc')"
+   res="$( ls --color=always -tp | sort -r | fzf --ansi --preview-window=right:80% --preview='[ -f {} ] && preview {} || tree {} ' --header='Jump to loc')"
+   if [ -d "$res" ]; then
+      cmd="cd"
+   else
+      cmd="select"
+   fi
+   echo "send $id $cmd \"$res\""
+   lf -remote "send $id $cmd \"$res\""
+ }}
+
 cmd fzfcdbig ${{
    res="$(fd -S +30m | sort -k5 -r  | fzf --preview='ls -l {}'| awk '{print $(NF)}')"
    if [ -d "$res" ]; then
@@ -418,6 +430,9 @@ cmd catrb ${{
 	lf -remote "send $id cd \"${d}\""
 }}
 
+cmd testrb ${{
+  ruby --version
+}}
 cmd fzf_last_changed ${{
    res=$( fd -t f --changed-within 2days | fzf )
    if [ -d "$res" ]; then
@@ -500,7 +515,7 @@ map ef $ee.sh
 map es $sudo $EDITOR "$f"
 map ev $vim "$f"
 
-map go fzfcd
+map go fzfgo
 map g/ fzfcd
 map gg fzf_last_changed
 # map gt
@@ -564,6 +579,9 @@ map . set hidden!
 
 map R $printf '%s\n' $fx | vidir -
 map <f-2> $printf '%s\n' $fx | vidir -
+
+map ok testrb
+map <esc> quit
 
 set hidden on
 set info size:time
