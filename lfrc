@@ -60,7 +60,7 @@ cmd edit_cd ${{
 	  lf -remote "send $id $cmd \"$f\""
    elif [ -f "$f" ]; then
 	   case $(file -b --mime-type - < "$f") in
-	  	(text/*)
+	  	(text/*|*/json)
 			$EDITOR "$f"
 	   esac
    fi
