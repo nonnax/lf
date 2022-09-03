@@ -336,7 +336,7 @@ cmd cd_OLDPWD ${{
 # cd with fzf
 cmd fzfcd ${{
    # res="$( find . -maxdepth 3 2>&1 | sed 's/^.\///' | sort | fzf --reverse --preview='cleaner.sh && file --mime {} | grep -i 'text' && bat --color=always {} || pv.sh {}' --header='Jump to loc')"
-   res="$( find . -maxdepth 3 2>&1 | sed 's/^.\///' | sort | fzf --ansi --reverse --preview-window=right:80% --preview='[ -f {} ] && preview {} || tree {} ' --header='Jump to loc')"
+   res="$( recent 1month | sed 's/^.\///' | sort | fzf --ansi --reverse --preview-window=right:80% --preview='[ -f {} ] && preview {} || tree {} ' --header='Jump to loc')"
    if [ -d "$res" ]; then
       cmd="cd"
    else
@@ -510,13 +510,13 @@ map + mk_readonly_toggle
 
 
 map ec $csvedit "$f"
-map ee $$EDITOR "$f"
+map ee $editext.lua "$f"
 map ef $ee.sh
 map es $sudo $EDITOR "$f"
 map ev $vim "$f"
 
-map go fzfgo
-map g/ fzfcd
+map g/ fzfgo
+map go fzfcd
 map gg fzf_last_changed
 # map gt
 map gb cd ~/bin
@@ -548,6 +548,7 @@ map oA %audacity "$f" &
 map ob $foliate "$f"
 map oc $csvedit "$f"
 map od %lodraw "$f"
+map oh $hx "$f"
 map oe $epr "$f"
 map oos $sudo $EDITOR "$f"
 map ow $bat "$f"
@@ -580,7 +581,7 @@ map . set hidden!
 map R $printf '%s\n' $fx | vidir -
 map <f-2> $printf '%s\n' $fx | vidir -
 
-map ok testrb
+map ok $kak "$f"
 map <esc> quit
 
 set hidden on
