@@ -417,22 +417,6 @@ cmd setwallpaper ${{
    cp "$f" ~/.local/share/bg/wall.png && feh --bg-scale --no-fehbg "$f"
  }}
 
-cmd oilchange ${{
-	shopt -s oil:all
-	= ARGV
-	for i in @range(1000) {
-		echo "hello"
-	}
-}}
-
-cmd catrb ${{
-	d=$( catrb.oil )
-	lf -remote "send $id cd \"${d}\""
-}}
-
-cmd testrb ${{
-  ruby --version
-}}
 cmd fzf_last_changed ${{
    res=$( fd -t f --changed-within 2days | fzf )
    if [ -d "$res" ]; then
@@ -441,6 +425,12 @@ cmd fzf_last_changed ${{
       cmd="select"
    fi
    lf -remote "send $id $cmd \"$res\""
+}}
+
+cmd rename_vidir ${{
+  res=$( printf '%s\n' $fx | vidir - | cut -f2 )
+  mv "$fx" "$res"
+  lf -remote "send select \"$res\""
 }}
 #	--------------------------------------------------------
 # remove some default bindings
@@ -578,7 +568,8 @@ map V $feh "$f"
 
 map . set hidden!
 
-map R $printf '%s\n' $fx | vidir -
+# map R $printf '%s\n' $fx | vidir -
+map R rename_vidir
 map <f-2> $printf '%s\n' $fx | vidir -
 
 map ok $kak "$f"
